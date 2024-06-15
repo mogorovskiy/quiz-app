@@ -1,12 +1,12 @@
 package com.mogorovskiy.quiz;
 
 import com.mogorovskiy.dao.DeckDao;
-import com.mogorovskiy.util.DatabaseUtil;
+import com.mogorovskiy.quiz.service.DeckService;
+import com.mogorovskiy.quiz.service.impl.DeckPickerImpl;
 import com.mogorovskiy.dao.impl.CardMultipleChoiceDaoImpl;
 import com.mogorovskiy.dao.impl.DeckDaoImpl;
 import com.mogorovskiy.quiz.service.DeckPicker;
 import com.mogorovskiy.quiz.executor.QuizExecutor;
-import com.mogorovskiy.quiz.executor.impl.PlayMultipleChoice;
 import com.mogorovskiy.quiz.service.impl.CardServiceImpl;
 import com.mogorovskiy.quiz.service.impl.DeckServiceImpl;
 
@@ -15,19 +15,17 @@ import java.util.Scanner;
 public class QuizApp {
 
     private final DeckDao deckDao;
-    private final com.mogorovskiy.dao.CardMultipleChoiceDao cardDao;
-    private final DatabaseUtil dbHelper;
     private final Scanner scanner;
-    private DeckPicker deckPicker;
-    private QuizExecutor playExecutor;
+    private final DeckPicker deckPicker;
+    private final QuizExecutor quizExecutor;
+    private final DeckService deckService = new DeckServiceImpl(deckDao);
 
     public QuizApp() {
         this.deckDao = new DeckDaoImpl();
         this.cardDao = new CardMultipleChoiceDaoImpl();
         this.scanner = new Scanner(System.in);
-        this.dbHelper = new DatabaseUtil();
-        this.deckPicker = deckPicker;
-        this.playExecutor = playExecutor;
+        this.deckPicker = new DeckPickerImpl();
+        this.quizExecutor = quizExecutor;
     }
 
     public void start() {
@@ -44,9 +42,9 @@ public class QuizApp {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> new DeckServiceImpl(deckDao).createDeck(scanner);
+                case 1 -> .createDeck();
                 case 2 -> new CardServiceImpl(deckDao, cardDao).addCardsToDeck(scanner);
-                case 3 -> play(scanner);
+                case 3 -> play();
                 case 4 -> {
                     System.out.println("Exiting QuizApp. Goodbye!");
                     return;
@@ -56,10 +54,7 @@ public class QuizApp {
         }
     }
 
-    private void play(Scanner scanner) {
-        DeckPicker deckPicker = new DeckPicker(new DeckDao());
-        QuizExecutor playExecutor = new PlayMultipleChoice();
-        QuizApp quizApp = new QuizApp(deckPicker, playExecutor);
-        quizApp.start();
+    private void play() {
+        //todo implement
     }
 }
