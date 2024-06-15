@@ -2,7 +2,6 @@ package com.mogorovskiy.quiz.service.impl;
 
 import com.mogorovskiy.dao.DeckDao;
 import com.mogorovskiy.model.Deck;
-import com.mogorovskiy.model.card.Card;
 import com.mogorovskiy.quiz.service.DeckPicker;
 
 import java.util.List;
@@ -11,53 +10,28 @@ import java.util.Scanner;
 public class DeckPickerImpl implements DeckPicker {
 
     private final DeckDao deckDao;
+    private final Scanner scanner;
 
     public DeckPickerImpl(DeckDao deckDao) {
         this.deckDao = deckDao;
+        this.scanner = new Scanner(System.in);
     }
 
     @Override
-    public List<Card> chooseGameMod(Scanner scanner) {
-        System.out.println("Choose category:");
-        System.out.println("1. English");
-        System.out.println("2. Java");
+    public Deck pickDeck() {
+        System.out.println("Choose deck:");
+        printAllDecks();
 
-        int categoryChoice = scanner.nextInt();
+        int deckId = scanner.nextInt();
         scanner.nextLine();
 
-        String category = "";
-        switch (categoryChoice) {
-            case 1 -> category = "English";
-            case 2 -> category = "Java";
-            default -> {
-                System.out.println("Invalid choice.");
-            }
-        }
+        return deckDao.getDeckById(deckId);
+    }
 
-        List<Deck> decks = deckDao.getDecksByName(category);
-        if (decks.isEmpty()) {
-            System.out.println("No decks found for category " + category);
-            //return null;
-        }
-
-        System.out.println("Choose deck ID to start:");
+    private void printAllDecks() {
+        List<Deck> decks = deckDao.getAllDecks();
         for (Deck deck : decks) {
             System.out.println(deck.getId() + ". " + deck.getName());
         }
-
-        long deckId = scanner.nextLong();
-        scanner.nextLine();
-        System.out.println("Starting test for deck '" + category + "'...");
-
-        return findCards(deckId);
-    }
-
-    public List<Card> findCards(Long deckId) {
-        List<Card> cards = deckDao.getCardsByDeckId(deckId);
-        if (cards.isEmpty()) {
-            System.out.println("No cards found in deck ID " + deckId);
-            //return null;
-        }
-        return cards;
     }
 }

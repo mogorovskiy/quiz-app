@@ -1,24 +1,23 @@
 package com.mogorovskiy.dao.impl;
 
 import com.mogorovskiy.dao.CardDao;
+import com.mogorovskiy.model.card.CardTranslation;
 import com.mogorovskiy.util.DatabaseUtil;
-import com.mogorovskiy.model.card.CardMultipleChoice;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class CardMultipleChoiceDaoImpl implements CardDao<CardMultipleChoice> {
+public class CardTranslationDaoImpl implements CardDao<CardTranslation> {
 
     @Override
-    public void createCard(CardMultipleChoice card) {
-        String sql = "INSERT INTO card_multiple_choice(deck_id, question, answer_options, correct_option) VALUES(?, ?, ?, ?)";
+    public void createCard(CardTranslation card) {
+        String sql = "INSERT INTO card_translation(deck_id, question, correct_answer) VALUES(?, ?, ?)";
         try (Connection conn = DatabaseUtil.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, card.getDeckId());
             pstmt.setString(2, card.getQuestion());
-            pstmt.setString(3, String.join(",", card.getAnswerOptions()));
-            pstmt.setInt(4, card.getCorrectOption());
+            pstmt.setString(3, card.getCorrectAnswer());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Error inserting card: " + e);

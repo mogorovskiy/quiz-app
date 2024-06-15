@@ -4,25 +4,31 @@ import com.mogorovskiy.dao.CardMultipleChoiceDao;
 import com.mogorovskiy.dao.DeckDao;
 import com.mogorovskiy.model.Deck;
 import com.mogorovskiy.model.card.CardMultipleChoice;
+import com.mogorovskiy.quiz.service.CardService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Scanner;
 
 @RequiredArgsConstructor
-public class CardServiceImpl {
+public class CardServiceImpl implements CardService {
 
     private final DeckDao deckDao;
     private final CardMultipleChoiceDao cardDao;
+    private final Scanner scanner;
 
-    public void addCardsToDeck(Scanner scanner) {
+    public void addCardsToDeck() {
         System.out.println("Choose deck ID to add cards:");
         List<Deck> decks = deckDao.getAllDecks();
         for (Deck deck : decks) {
             System.out.println(deck.getId() + ". " + deck.getName());
         }
-        long deckId = scanner.nextLong();
+
+        int deckId = scanner.nextInt();
         scanner.nextLine();
+
+        Deck deck = deckDao.getDeckById(deckId);
+
         while (true) {
             System.out.println("\nChoose card type to add:");
             System.out.println("1. Multiple Choice");
