@@ -25,8 +25,10 @@ public class QuizExecutorMultipleChoice implements QuizExecutor<CardMultipleChoi
             if (userAnswer == card.getCorrectOption() + 1) {
                 score++;
                 System.out.println("Correct!");
+                System.out.println("------------------------------------------");
             } else {
-                System.out.println("Incorrect. Correct answer is: " + options[card.getCorrectOption()]);
+                System.out.println("Incorrect. Correct answer is: " + options[card.getCorrectOption() - 1]);
+                System.out.println("------------------------------------------");
             }
         }
 

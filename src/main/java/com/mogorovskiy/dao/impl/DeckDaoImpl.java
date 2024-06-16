@@ -15,7 +15,7 @@ public class DeckDaoImpl implements DeckDao {
 
     @Override
     public void createDeck(String name) {
-        String sql = "INSERT INTO decks(name) VALUES(?)";
+        String sql = "INSERT INTO deck(name) VALUES(?)";
         try (Connection conn = DatabaseUtil.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
@@ -70,12 +70,12 @@ public class DeckDaoImpl implements DeckDao {
     }
 
     @Override
-    public Deck getDeckById(int deckId) {
+    public Deck getDeckById(Long deckId) {
         String sql = "SELECT * FROM deck WHERE id = ?";
         Deck deck = null;
         try (Connection conn = DatabaseUtil.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, deckId);
+            pstmt.setLong(1, deckId);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {

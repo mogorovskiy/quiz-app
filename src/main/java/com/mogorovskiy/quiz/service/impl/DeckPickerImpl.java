@@ -19,10 +19,9 @@ public class DeckPickerImpl implements DeckPicker {
 
     @Override
     public Deck pickDeck() {
-        System.out.println("Choose deck:");
         printAllDecks();
 
-        int deckId = scanner.nextInt();
+        Long deckId = scanner.nextLong();
         scanner.nextLine();
 
         return deckDao.getDeckById(deckId);

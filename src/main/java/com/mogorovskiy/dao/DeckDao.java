@@ -12,5 +12,5 @@ public interface DeckDao {
 
     List<Deck> getDecksByName(String name);
 
-    Deck getDeckById(int deckId);
+    Deck getDeckById(Long deckId);
 }

@@ -16,13 +16,13 @@ public class QuizExecutorTranslation implements QuizExecutor<CardTranslation> {
             System.out.println(card.getQuestion());
 
             String userAnswer = scanner.nextLine();
-            scanner.nextLine();
-
             if (userAnswer.equalsIgnoreCase(card.getCorrectAnswer() )) {
                 score++;
                 System.out.println("Correct!");
+                System.out.println("-----------------------------------------------");
             } else {
                 System.out.println("Incorrect. Correct answer is: " + card.getCorrectAnswer());
+                System.out.println("-----------------------------------------------");
             }
         }
 

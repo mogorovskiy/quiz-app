@@ -1,9 +1,12 @@
 package com.mogorovskiy.quiz.service.impl;
 
-import com.mogorovskiy.dao.CardMultipleChoiceDao;
+import com.mogorovskiy.dao.CardDao;
 import com.mogorovskiy.dao.DeckDao;
+import com.mogorovskiy.dao.impl.CardMultipleChoiceDaoImpl;
+import com.mogorovskiy.dao.impl.CardTranslationDaoImpl;
 import com.mogorovskiy.model.Deck;
 import com.mogorovskiy.model.card.CardMultipleChoice;
+import com.mogorovskiy.model.card.CardTranslation;
 import com.mogorovskiy.quiz.service.CardService;
 import lombok.RequiredArgsConstructor;
 
@@ -14,7 +17,7 @@ import java.util.Scanner;
 public class CardServiceImpl implements CardService {
 
     private final DeckDao deckDao;
-    private final CardMultipleChoiceDao cardDao;
+    private final CardDao cardDao;
     private final Scanner scanner;
 
     public void addCardsToDeck() {
@@ -24,7 +27,7 @@ public class CardServiceImpl implements CardService {
             System.out.println(deck.getId() + ". " + deck.getName());
         }
 
-        int deckId = scanner.nextInt();
+        Long deckId = scanner.nextLong();
         scanner.nextLine();
 
         Deck deck = deckDao.getDeckById(deckId);
@@ -32,14 +35,14 @@ public class CardServiceImpl implements CardService {
         while (true) {
             System.out.println("\nChoose card type to add:");
             System.out.println("1. Multiple Choice");
-            System.out.println("2. True/False");
+            System.out.println("2. Translation");
             System.out.println("3. Exit to main menu");
             int choice = scanner.nextInt();
             scanner.nextLine();
 
             switch (choice) {
                 case 1 -> addMultipleChoiceCard(scanner, deckId);
-                //case 2 -> addTrueFalseCard(scanner, deckId);
+                case 2 -> addTranslationCard(scanner, deckId);
                 case 3 -> {
                     return;
                 }
@@ -48,7 +51,7 @@ public class CardServiceImpl implements CardService {
         }
     }
 
-    private void addMultipleChoiceCard(Scanner scanner, long deckId) {
+    private void addMultipleChoiceCard(Scanner scanner, Long deckId) {
         System.out.println("Enter question:");
         String question = scanner.nextLine();
 
@@ -56,25 +59,31 @@ public class CardServiceImpl implements CardService {
         String optionsInput = scanner.nextLine();
         String[] options = optionsInput.split(",");
 
-        System.out.println("Enter index of correct option:");
+        System.out.println("Enter index of correct option (1-4):");
         int correctOption = scanner.nextInt();
         scanner.nextLine();
 
-        CardMultipleChoice card = new CardMultipleChoice(null, question, options, correctOption);
-        cardDao.createCard(card);
-        System.out.println("Multiple Choice Card added successfully to deck ID " + deckId);
+        CardMultipleChoice card = new CardMultipleChoice(null, deckId, question, options, correctOption);
+
+        CardMultipleChoiceDaoImpl cardMultipleChoiceDao = new CardMultipleChoiceDaoImpl();
+        cardMultipleChoiceDao.createCard(card);
+
+        System.out.println("Multiple Choice Card added successfully to deck Id " + deckId);
     }
-/*
-    private void addTrueFalseCard(Scanner scanner, long deckId) {
+
+    private void addTranslationCard(Scanner scanner, long deckId) {
         System.out.println("Enter question:");
         String question = scanner.nextLine();
 
-        System.out.println("Is the correct answer true or false? (true/false):");
-        boolean correctAnswer = scanner.nextBoolean();
-        scanner.nextLine(); // Consume newline
+        System.out.println("Enter the correct answer:");       //TODO!!!! indexOutOfBo..
+        String correctAnswer = scanner.nextLine();
+        scanner.nextLine();
 
-        TrueFalseCard card = new TrueFalseCard(null, question, correctAnswer);
-        cardDao.insertCard(card, deckId);
-        System.out.println("True/False Card added successfully to deck ID " + deckId);
-    }*/
+        CardTranslation card = new CardTranslation(null, deckId, question, correctAnswer);
+
+        CardTranslationDaoImpl cardTranslationDao = new CardTranslationDaoImpl();
+        cardTranslationDao.createCard(card);
+
+        System.out.println("Translation Card added successfully to deck ID " + deckId);
+    }
 }

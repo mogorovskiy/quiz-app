@@ -1,10 +1,11 @@
 package com.mogorovskiy.quiz.service.impl;
 
 import com.mogorovskiy.dao.DeckDao;
+import com.mogorovskiy.quiz.service.DeckService;
 
 import java.util.Scanner;
 
-public class DeckServiceImpl {
+public class DeckServiceImpl implements DeckService {
 
     private final DeckDao deckDao;
     private final Scanner scanner;
