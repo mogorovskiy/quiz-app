@@ -1,7 +1,9 @@
 package com.mogorovskiy;
 
+import com.mogorovskiy.quiz.QuizApp;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello!");
+        new QuizApp().start();
     }
 }
