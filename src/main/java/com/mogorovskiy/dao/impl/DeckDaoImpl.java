@@ -48,28 +48,6 @@ public class DeckDaoImpl implements DeckDao {
         return decks;
     }
 
-    public List<Deck> getDecksByName(String name) {
-        String sql = "SELECT * FROM deck WHERE name = ?";
-        List<Deck> decks = new ArrayList<>();
-        try (Connection conn = DatabaseUtil.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Deck deck = new Deck();
-
-                deck.setId(rs.getLong("id"));
-                deck.setName(rs.getString("name"));
-
-                decks.add(deck);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return decks;
-    }
-
     @Override
     public Optional<Deck> getDeckById(Long deckId) {
         String sql = "SELECT * FROM deck WHERE id = ?";

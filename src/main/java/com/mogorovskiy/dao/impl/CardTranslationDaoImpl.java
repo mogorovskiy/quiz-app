@@ -1,7 +1,6 @@
 package com.mogorovskiy.dao.impl;
 
 import com.mogorovskiy.dao.CardDao;
-import com.mogorovskiy.model.card.CardMultipleChoice;
 import com.mogorovskiy.model.card.CardTranslation;
 import com.mogorovskiy.util.DatabaseUtil;
 
