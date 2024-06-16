@@ -5,6 +5,7 @@ import com.mogorovskiy.model.Deck;
 import com.mogorovskiy.quiz.service.DeckPicker;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class DeckPickerImpl implements DeckPicker {
@@ -18,7 +19,7 @@ public class DeckPickerImpl implements DeckPicker {
     }
 
     @Override
-    public Deck pickDeck() {
+    public Optional<Deck> pickDeck() {
         printAllDecks();
 
         Long deckId = scanner.nextLong();

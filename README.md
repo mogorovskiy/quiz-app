@@ -1,10 +1,6 @@
-# Dear DataOx!
-
-Thanks for the interesting test task. I present to you my vision of this project. Honestly, I had a good time sitting :). Also, I added a database file with initial input data (for initial testing). It must be said that this is, as they say, the Minimum Working Version, which can be expanded in the future. But all the current functionality seemed stable to me.
-
 ## Overview
 
-This application is an implementation of the popular game - quiz! Although it can be confidently used, for example, for learning foreign languages.
+Console-based quiz game. Although it can be confidently used, for example, for learning foreign languages.
 
 ## Functionalities
 
@@ -16,18 +12,22 @@ This application is an implementation of the popular game - quiz! Although it ca
 ## Game Modes
 
 1. **Multiple Choice Mode**:
-    - The player is presented with a question and four answer options, where only one is correct.
+    - The player is presented with a question and up to four answer options, where only one is correct.
 
-2. **Translation Mode** (In cases with English):
+2. **Translation Mode** (e.g. in cases with English):
     - The player is given the opportunity to test their knowledge “in practice” by manually writing the translation of a word. The program then checks the correctness.
 
 ## Additional Features
 
-I implemented all the main features and one additional one - using a database (I took SqLite, worked with it for the first time).
+I implemented all the main features and one additional one - using a SQLite database.
 
 ## How to Use
-????
+1. Open the project in your IDE
+2. Just execute. All example quiz are already included into DB, so you can start quizzing. 
 
 ---
 
-Thank you for trying out QuizApp. Best wishes, Kirill M.
+## Developer Note
+
+Thanks for the interesting test task. I present to you my vision of this project. Also, I've added a database file with initial input data (for testing purposes). It must be said that this is the Minimum Viable Product, which can be expanded in the future. But all the current functionality seemed stable to me.   
+Best wishes, Kirill M.

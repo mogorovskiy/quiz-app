@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class DeckDaoImpl implements DeckDao {
 
@@ -70,7 +71,7 @@ public class DeckDaoImpl implements DeckDao {
     }
 
     @Override
-    public Deck getDeckById(Long deckId) {
+    public Optional<Deck> getDeckById(Long deckId) {
         String sql = "SELECT * FROM deck WHERE id = ?";
         Deck deck = null;
         try (Connection conn = DatabaseUtil.connect();
@@ -86,6 +87,6 @@ public class DeckDaoImpl implements DeckDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return deck;
+        return Optional.ofNullable(deck);
     }
 }

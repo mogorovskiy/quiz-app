@@ -3,6 +3,7 @@ package com.mogorovskiy.dao;
 import com.mogorovskiy.model.Deck;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DeckDao {
 
@@ -12,5 +13,5 @@ public interface DeckDao {
 
     List<Deck> getDecksByName(String name);
 
-    Deck getDeckById(Long deckId);
+    Optional<Deck> getDeckById(Long deckId);
 }

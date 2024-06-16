@@ -1,6 +1,5 @@
 package com.mogorovskiy.quiz;
 
-import com.mogorovskiy.dao.CardDao;
 import com.mogorovskiy.dao.DeckDao;
 import com.mogorovskiy.dao.impl.CardMultipleChoiceDaoImpl;
 import com.mogorovskiy.dao.impl.CardTranslationDaoImpl;
@@ -11,6 +10,7 @@ import com.mogorovskiy.model.card.CardTranslation;
 import com.mogorovskiy.quiz.executor.QuizExecutor;
 import com.mogorovskiy.quiz.executor.impl.QuizExecutorMultipleChoice;
 import com.mogorovskiy.quiz.executor.impl.QuizExecutorTranslation;
+import com.mogorovskiy.quiz.service.CardService;
 import com.mogorovskiy.quiz.service.DeckPicker;
 import com.mogorovskiy.quiz.service.DeckService;
 import com.mogorovskiy.quiz.service.impl.CardServiceImpl;
@@ -18,27 +18,31 @@ import com.mogorovskiy.quiz.service.impl.DeckPickerImpl;
 import com.mogorovskiy.quiz.service.impl.DeckServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class QuizApp {
 
-    private final DeckDao deckDao;
-    private final CardDao cardDao;
+    private final CardService cardService;
     private final Scanner scanner;
     private final DeckPicker deckPicker;
-    private QuizExecutor quizExecutor;
-    private CardMultipleChoiceDaoImpl cardMC = new CardMultipleChoiceDaoImpl();
-    private DeckService deckService;
-    private CardTranslationDaoImpl cardT = new CardTranslationDaoImpl();
-
+    private final DeckService deckService;
+    private final CardMultipleChoiceDaoImpl cardMC;
+    private final CardTranslationDaoImpl cardT;
+    private final QuizExecutor quizExecutorMC;
+    private final QuizExecutor quizExecutorT;
 
     public QuizApp() {
-        this.deckDao = new DeckDaoImpl();
-        this.cardDao = new CardMultipleChoiceDaoImpl();
+        DeckDao deckDao = new DeckDaoImpl();
+
         this.scanner = new Scanner(System.in);
         this.deckPicker = new DeckPickerImpl(deckDao);
-        this.quizExecutor = quizExecutor;
         this.deckService = new DeckServiceImpl(deckDao);
+        this.cardService = new CardServiceImpl(deckDao, scanner);
+        this.cardMC = new CardMultipleChoiceDaoImpl();
+        this.cardT = new CardTranslationDaoImpl();
+        this.quizExecutorMC = new QuizExecutorMultipleChoice();
+        this.quizExecutorT = new QuizExecutorTranslation();
     }
 
     public void start() {
@@ -56,7 +60,7 @@ public class QuizApp {
 
             switch (choice) {
                 case 1 -> deckService.createDeck();
-                case 2 -> new CardServiceImpl(deckDao, cardDao, scanner).addCardsToDeck();   //TODO
+                case 2 -> cardService.addCardsToDeck();
                 case 3 -> play();
                 case 4 -> {
                     System.out.println("Exiting QuizApp. Goodbye!");
@@ -69,24 +73,20 @@ public class QuizApp {
 
     private void play() {
         System.out.println("Choose deck ID to start: (may take a few seconds)");
-        Deck deck = deckPicker.pickDeck();
+        Optional<Deck> deckOptional = deckPicker.pickDeck();
 
-        Long deckId = deck.getId();
-        System.out.println("Choose mode: (1 - Multiple Choice, 2 - Translation)");
-        int mode = scanner.nextInt();
-
-        QuizExecutor quizExecutor;
-
-        if (mode == 1) {
-            quizExecutor = new QuizExecutorMultipleChoice();
-            List<CardMultipleChoice> cardsMC = cardMC.getCardsByDeckId(deckId);
-
-            quizExecutor.execute(scanner, cardsMC);
-        } else if (mode == 2) {
-            quizExecutor = new QuizExecutorTranslation();
-            List<CardTranslation> cardsT = cardT.getCardsByDeckId(deckId);
-
-            quizExecutor.execute(scanner, cardsT);
+        if (deckOptional.isEmpty()) {
+            System.out.println("No deck found with the given ID.");
+            return;
         }
+
+        Deck deck = deckOptional.get();
+        Long deckId = deck.getId();
+
+        List<CardMultipleChoice> cardsMC = cardMC.getCardsByDeckId(deckId);
+        List<CardTranslation> cardsT = cardT.getCardsByDeckId(deckId);
+
+        quizExecutorMC.execute(scanner, cardsMC);
+        quizExecutorT.execute(scanner, cardsT);
     }
 }

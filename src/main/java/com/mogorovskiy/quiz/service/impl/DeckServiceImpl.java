@@ -18,6 +18,10 @@ public class DeckServiceImpl implements DeckService {
     public void createDeck() {
         System.out.println("Enter deck name:");
         String name = scanner.nextLine();
+        if (name.trim().isEmpty()) {
+            System.out.println("Deck name cannot be empty. Please try again.");
+            return;
+        }
 
         deckDao.createDeck(name);
         System.out.println("Deck '" + name + "' created.");

@@ -1,6 +1,5 @@
 package com.mogorovskiy.quiz.service.impl;
 
-import com.mogorovskiy.dao.CardDao;
 import com.mogorovskiy.dao.DeckDao;
 import com.mogorovskiy.dao.impl.CardMultipleChoiceDaoImpl;
 import com.mogorovskiy.dao.impl.CardTranslationDaoImpl;
@@ -16,8 +15,10 @@ import java.util.Scanner;
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
+    private static final int MIN_OPTIONS = 1;
+    private static final int MAX_OPTIONS = 4;
+
     private final DeckDao deckDao;
-    private final CardDao cardDao;
     private final Scanner scanner;
 
     public void addCardsToDeck() {
@@ -27,16 +28,15 @@ public class CardServiceImpl implements CardService {
             System.out.println(deck.getId() + ". " + deck.getName());
         }
 
-        Long deckId = scanner.nextLong();
+        long deckId = scanner.nextLong();
         scanner.nextLine();
-
-        Deck deck = deckDao.getDeckById(deckId);
 
         while (true) {
             System.out.println("\nChoose card type to add:");
             System.out.println("1. Multiple Choice");
             System.out.println("2. Translation");
             System.out.println("3. Exit to main menu");
+
             int choice = scanner.nextInt();
             scanner.nextLine();
 
@@ -59,11 +59,22 @@ public class CardServiceImpl implements CardService {
         String optionsInput = scanner.nextLine();
         String[] options = optionsInput.split(",");
 
-        System.out.println("Enter index of correct option (1-4):");
+        if (optionsAreInvalid(options)) {
+            System.out.println("Invalid options. Please enter between " + MIN_OPTIONS + " and " + MAX_OPTIONS + " options.");
+            return;
+        }
+
+        System.out.println("Enter index of correct option (1-" + options.length + "):");
         int correctOption = scanner.nextInt();
+
+        if (correctOptionIsInvalid(correctOption, options.length)) {
+            System.out.println("Invalid correct option index " + correctOption + " (max allowed is " + (options.length - 1) + ")");
+            return;
+        }
+
         scanner.nextLine();
 
-        CardMultipleChoice card = new CardMultipleChoice(null, deckId, question, options, correctOption);
+        CardMultipleChoice card = new CardMultipleChoice(deckId, question, options, correctOption);
 
         CardMultipleChoiceDaoImpl cardMultipleChoiceDao = new CardMultipleChoiceDaoImpl();
         cardMultipleChoiceDao.createCard(card);
@@ -71,15 +82,30 @@ public class CardServiceImpl implements CardService {
         System.out.println("Multiple Choice Card added successfully to deck Id " + deckId);
     }
 
+    private boolean correctOptionIsInvalid(int correctOption, int length) {
+        return correctOption < 0 || correctOption >= length;
+    }
+
+    private boolean optionsAreInvalid(String[] options) {
+        return options.length < MIN_OPTIONS || options.length > MAX_OPTIONS;
+    }
+
     private void addTranslationCard(Scanner scanner, long deckId) {
         System.out.println("Enter question:");
         String question = scanner.nextLine();
+        if (question.trim().isEmpty()) {
+            System.out.println("Question cannot be empty. Please try again.");
+            return;
+        }
 
-        System.out.println("Enter the correct answer:");       //TODO!!!! indexOutOfBo..
+        System.out.println("Enter the correct answer:");
         String correctAnswer = scanner.nextLine();
-        scanner.nextLine();
+        if (correctAnswer.trim().isEmpty()) {
+            System.out.println("Correct answer cannot be empty. Please try again.");
+            return;
+        }
 
-        CardTranslation card = new CardTranslation(null, deckId, question, correctAnswer);
+        CardTranslation card = new CardTranslation(deckId, question, correctAnswer);
 
         CardTranslationDaoImpl cardTranslationDao = new CardTranslationDaoImpl();
         cardTranslationDao.createCard(card);

@@ -10,13 +10,18 @@ public class QuizExecutorTranslation implements QuizExecutor<CardTranslation> {
 
     @Override
     public void execute(Scanner scanner, List<CardTranslation> cards) {
+        if (cards == null || cards.isEmpty()) {
+            System.out.println("No cards to display.");
+            return;
+        }
+
         int score = 0;
 
         for (CardTranslation card : cards) {
             System.out.println(card.getQuestion());
 
             String userAnswer = scanner.nextLine();
-            if (userAnswer.equalsIgnoreCase(card.getCorrectAnswer() )) {
+            if (userAnswer.trim().equalsIgnoreCase(card.getCorrectAnswer().trim())) {
                 score++;
                 System.out.println("Correct!");
                 System.out.println("-----------------------------------------------");

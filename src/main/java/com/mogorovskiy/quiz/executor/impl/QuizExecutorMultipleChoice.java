@@ -10,6 +10,11 @@ public class QuizExecutorMultipleChoice implements QuizExecutor<CardMultipleChoi
 
     @Override
     public void execute(Scanner scanner, List<CardMultipleChoice> cards) {
+        if (cards == null || cards.isEmpty()) {
+            System.out.println("No cards to display.");
+            return;
+        }
+
         int score = 0;
 
         for (CardMultipleChoice card : cards) {
@@ -27,7 +32,7 @@ public class QuizExecutorMultipleChoice implements QuizExecutor<CardMultipleChoi
                 System.out.println("Correct!");
                 System.out.println("------------------------------------------");
             } else {
-                System.out.println("Incorrect. Correct answer is: " + options[card.getCorrectOption() - 1]);
+                System.out.println("Incorrect. Correct answer is: " + options[card.getCorrectOption()]);
                 System.out.println("------------------------------------------");
             }
         }
